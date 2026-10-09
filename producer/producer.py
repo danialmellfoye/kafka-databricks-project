@@ -9,6 +9,7 @@ from confluent_kafka import Producer
 config = {
     "bootstrap.servers": f"{os.environ['KAFKA_HOST']}:{os.environ['KAFKA_PORT']}",
     "security.protocol": "SASL_SSL",
+    "ssl.ca.location": os.environ["KAFKA_CA_FILE"],
     "sasl.mechanisms": "PLAIN",
     "sasl.username": os.environ["KAFKA_USERNAME"],
     "sasl.password": os.environ["KAFKA_PASSWORD"],
