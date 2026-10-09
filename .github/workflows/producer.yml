@@ -20,6 +20,13 @@ jobs:
         run: |
           pip install -r producer/requirements.txt
 
+      - name: Configure Aiven CA certificate
+        env:
+          KAFKA_CA_PEM: ${{ secrets.KAFKA_CA_PEM }}
+        run: |
+          printf '%s\n' "$KAFKA_CA_PEM" > "$RUNNER_TEMP/aiven-ca.pem"
+          echo "KAFKA_CA_FILE=$RUNNER_TEMP/aiven-ca.pem" >> "$GITHUB_ENV"
+
       - name: Send Kafka event
         env:
           KAFKA_HOST: ${{ secrets.KAFKA_HOST }}
