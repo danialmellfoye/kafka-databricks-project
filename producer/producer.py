@@ -30,25 +30,26 @@ def delivery_report(err, msg):
             f"offset={msg.offset()}"
         )
 
+while True:
+    order = {
+        "order_id": random.randint(10000, 99999),
+        "customer_id": random.randint(1, 1000),
+        "product_id": random.randint(1, 100),
+        "quantity": random.randint(1, 5),
+        "price": round(random.uniform(100, 5000), 2),
+        "event_time": time.strftime("%Y-%m-%dT%H:%M:%SZ")
+    }
 
-order = {
-    "order_id": random.randint(10000, 99999),
-    "customer_id": random.randint(1, 1000),
-    "product_id": random.randint(1, 100),
-    "quantity": random.randint(1, 5),
-    "price": round(random.uniform(100, 5000), 2),
-    "event_time": time.strftime("%Y-%m-%dT%H:%M:%SZ")
-}
 
+    producer.produce(
+        topic="ecommerce_orders",
+        key=str(order["order_id"]),
+        value=json.dumps(order),
+        callback=delivery_report
+    )
 
-producer.produce(
-    topic="ecommerce_orders",
-    key=str(order["order_id"]),
-    value=json.dumps(order),
-    callback=delivery_report
-)
+    producer.flush()
 
-producer.flush()
-
-print("Order sent:")
-print(json.dumps(order, indent=2))
+    print("Order sent:")
+    print(json.dumps(order, indent=2))
+    time.sleep(2)
